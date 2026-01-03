@@ -1,0 +1,111 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="theme-color" content="#003399" />
+    <title>2026 K-Journey | Korean Air Style</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&family=Manrope:wght@200;400;600;800&display=swap');
+      
+      @font-face {
+        font-family: 'SeoulNamsan';
+        src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/SeoulNamsanM.woff') format('woff');
+        font-weight: normal;
+        font-style: normal;
+      }
+
+      :root {
+        --kal-blue: #003399;
+        --kal-sky: #A9DDF3;
+        --k-bg: #F2F5F7;
+        --k-card: #FFFFFF;
+      }
+
+      body {
+        font-family: 'Noto Sans KR', 'Manrope', sans-serif;
+        background-color: var(--k-bg);
+        color: #1a1a1a;
+        -webkit-font-smoothing: antialiased;
+        letter-spacing: -0.02em;
+        overflow-x: hidden;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .font-namsan {
+        font-family: 'SeoulNamsan', 'Noto Sans KR', sans-serif !important;
+      }
+
+      .kal-gradient {
+        background: linear-gradient(135deg, #003399 0%, #001e5c 100%);
+      }
+
+      .k-card {
+        background: var(--k-card);
+        border-radius: 2rem;
+        box-shadow: 0 4px 20px rgba(0, 51, 153, 0.04);
+        border: 1px solid rgba(0, 51, 153, 0.05);
+      }
+
+      .hide-scrollbar::-webkit-scrollbar { display: none; }
+      .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+      .glass-nav {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+      }
+
+      @keyframes slideUp {
+        from { opacity: 0; transform: translateY(15px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      .animate-k {
+        animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      }
+
+      .naver-green {
+        background-color: #03C75A;
+      }
+
+      .date-slider {
+        display: flex;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        gap: 0.75rem;
+        padding: 0.5rem 0;
+      }
+
+      .date-item {
+        scroll-snap-align: center;
+        flex-shrink: 0;
+      }
+
+      /* 防止機票內容在手機上跑版 */
+      @media (max-width: 640px) {
+        .k-card { border-radius: 1.5rem; }
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "@google/genai": "https://esm.sh/@google/genai@^1.34.0"
+  }
+}
+</script>
+</head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>

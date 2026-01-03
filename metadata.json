@@ -1,0 +1,7 @@
+{
+  "name": "K-Journey Planner",
+  "description": "An AI-powered travel assistant specialized in filling gaps for partially planned Korea trips with real-time search grounding.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
