@@ -2,63 +2,64 @@
 import { GoogleGenAI } from "@google/genai";
 import { DayPlan, TripContext, GroundingSource } from "../types";
 
-// Always use named parameter for apiKey and use process.env.API_KEY directly.
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-
+/**
+ * Service to generate travel suggestions using Gemini API.
+ * Uses Google Search grounding to provide up-to-date recommendations.
+ */
 export const generateSuggestions = async (
   currentPlan: DayPlan[],
   context: TripContext,
   targetDate: string
 ): Promise<{ text: string; sources: GroundingSource[] }> => {
-  const model = "gemini-3-flash-preview";
-  
-  const existingItineraryStr = currentPlan
-    .map(day => `日期: ${day.date}\n活動: ${day.items.filter(i => i.status === 'FIXED').map(i => `${i.time}: ${i.activity} 在 ${i.location}`).join(', ')}`)
-    .join('\n\n');
-
-  const prompt = `
-    你是一位專業的韓國旅遊顧問。使用者即將在 1/9 前往韓國。
-    
-    旅遊資訊：
-    目的地：${context.destination}
-    日期：${context.startDate} 開始，共 ${context.duration} 天
-    偏好：${context.preferences.join(', ')}
-    
-    目前的行程：
-    ${existingItineraryStr}
-    
-    任務：
-    請針對 ${targetDate} 這個尚未排定的空檔提供建議。
-    請確保建議內容：
-    1. 符合使用者的風格 (${context.preferences.join(', ')})。
-    2. 地理位置合理（考慮當天已有的行程）。
-    3. 包含 2024/2025 的最新趨勢（例如：聖水洞快閃店、漢南洞新開的咖啡廳、目前的冬季慶典）。
-    
-    請提供 3-4 個具體的建議，並以「繁體中文」回答。
-  `;
-
   try {
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const model = "gemini-3-flash-preview";
+    
+    const existingItineraryStr = currentPlan
+      .map(day => {
+        const items = day.items.filter(i => i.status === 'FIXED');
+        if (items.length === 0) return `Date: ${day.date} (No fixed plans yet)`;
+        return `Date: ${day.date}\nActivities: ${items.map(i => `${i.time}: ${i.activity} @ ${i.location}`).join(', ')}`;
+      })
+      .join('\n\n');
+
+    const prompt = `
+      You are a specialized Korea travel expert. The user is traveling to Korea in January 2026.
+      
+      Context:
+      Destination: ${context.destination}
+      Preferences: ${context.preferences.join(', ')}
+      Existing Fixed Itinerary:
+      ${existingItineraryStr}
+      
+      Please provide 3 specific travel suggestions for ${targetDate}.
+      Include: Attraction name, reason for recommendation (latest trends for 2026), and suggested duration.
+      Respond primarily in Korean with English subtitles or translations in parentheses. Keep the tone professional but enthusiastic.
+      NO CHINESE CHARACTERS.
+    `;
+
     const response = await ai.models.generateContent({
       model: model,
       contents: prompt,
       config: {
         tools: [{ googleSearch: {} }],
+        temperature: 0.8,
       },
     });
 
-    // Extract text directly using the .text property
-    const text = response.text || "找不到相關建議。";
+    const text = response.text || "AI could not generate suggestions at this time.";
+    
     const chunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks || [];
     const sources: GroundingSource[] = chunks
       .filter(chunk => chunk.web)
       .map(chunk => ({
-        title: chunk.web?.title || "參考連結",
+        title: chunk.web?.title || "Reference",
         uri: chunk.web?.uri || ""
       }));
 
     return { text, sources };
-  } catch (error) {
+  } catch (error: any) {
     console.error("Gemini Error:", error);
-    return { text: "生成建議時發生錯誤，請檢查網路連線。", sources: [] };
+    return { text: "❌ AI Connection Failed. Please check your network or API key.", sources: [] };
   }
 };

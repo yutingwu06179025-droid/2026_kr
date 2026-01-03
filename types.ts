@@ -24,6 +24,16 @@ export interface TripContext {
   preferences: string[];
 }
 
+export interface Voucher {
+  id: string;
+  title: string;
+  type: string;
+  date?: string;
+  status: string;
+  note?: string;
+}
+
+// Add GroundingSource interface to fix compilation error
 export interface GroundingSource {
   title: string;
   uri: string;
