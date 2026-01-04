@@ -6,110 +6,171 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="theme-color" content="#003399" />
-    <title>2026 K-Journey | Travel Planner</title>
+    <meta name="theme-color" content="#0057B8" />
+    <title>2026 K-Journey | Firestore Mode</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-      @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&family=Manrope:wght@200;400;600;800&display=swap');
-      
+      @font-face {
+        font-family: 'SeoulNamsan';
+        src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/SeoulNamsanEB.woff') format('woff');
+        font-weight: 800;
+        font-style: normal;
+      }
       @font-face {
         font-family: 'SeoulNamsan';
         src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/SeoulNamsanM.woff') format('woff');
-        font-weight: normal;
+        font-weight: 500;
         font-style: normal;
       }
-
+      
       :root {
-        --kal-blue: #003399;
+        --kal-blue: #0057B8;
         --kal-sky: #A9DDF3;
-        --k-bg: #F2F5F7;
-        --k-card: #FFFFFF;
+        --k-bg: #FFFFFF;
       }
 
       body {
-        font-family: 'Noto Sans KR', 'Manrope', sans-serif;
+        font-family: 'SeoulNamsan', sans-serif;
         background-color: var(--k-bg);
-        color: #1a1a1a;
+        margin: 0;
         -webkit-font-smoothing: antialiased;
-        letter-spacing: -0.02em;
-        overflow-x: hidden;
-        user-select: none;
-        -webkit-tap-highlight-color: transparent;
+        letter-spacing: -0.05em;
+        color: #1a1e27;
       }
 
-      .font-namsan {
-        font-family: 'SeoulNamsan', 'Noto Sans KR', sans-serif !important;
+      .main-gradient {
+        background: #0057B8;
+        background-image: 
+          radial-gradient(circle at 100% 0%, rgba(169, 221, 243, 0.45) 0%, transparent 50%),
+          radial-gradient(circle at 0% 100%, rgba(169, 221, 243, 0.15) 0%, transparent 60%);
+        position: relative;
+        overflow: hidden;
       }
 
-      .kal-gradient {
-        background: linear-gradient(135deg, #003399 0%, #001e5c 100%);
+      .content-container {
+        background: white;
+        border-radius: 60px 60px 0 0;
+        margin-top: -60px;
+        position: relative;
+        z-index: 10;
+        min-height: 80vh;
+        padding-bottom: 150px;
+        box-shadow: 0 -20px 40px rgba(0, 87, 184, 0.05);
       }
 
-      .k-card {
-        background: var(--k-card);
-        border-radius: 2rem;
-        box-shadow: 0 4px 20px rgba(0, 51, 153, 0.04);
-        border: 1px solid rgba(0, 51, 153, 0.05);
+      .date-capsule {
+        width: 82px;
+        height: 125px;
+        border-radius: 41px;
+        display: flex;
+        flex-shrink: 0;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        gap: 6px;
       }
+
+      .date-capsule.active {
+        background-color: white;
+        color: var(--kal-blue);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+        transform: translateY(-4px);
+      }
+
+      .date-capsule.inactive {
+        background-color: rgba(255, 255, 255, 0.18);
+        color: rgba(255, 255, 255, 0.45);
+        backdrop-filter: blur(12px);
+      }
+
+      .floating-nav {
+        position: fixed;
+        bottom: 35px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 45px;
+        box-shadow: 0 15px 50px rgba(0, 87, 184, 0.15);
+        display: flex;
+        padding: 14px 38px;
+        gap: 38px;
+        z-index: 100;
+        width: 88%;
+        max-width: 440px;
+        justify-content: space-around;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+      }
+
+      .input-field {
+        background: #F8FAFC;
+        border: 1px solid #E2E8F0;
+        border-radius: 18px;
+        padding: 14px 20px;
+        font-weight: 500;
+        width: 100%;
+        transition: all 0.2s;
+        font-family: 'SeoulNamsan', sans-serif;
+      }
+      .input-field:focus {
+        border-color: var(--kal-blue);
+        background: white;
+        outline: none;
+        box-shadow: 0 0 0 4px rgba(0, 87, 184, 0.1);
+      }
+
+      .btn-primary {
+        background: var(--kal-blue);
+        color: white;
+        padding: 16px 24px;
+        border-radius: 24px;
+        font-weight: 800;
+        transition: all 0.2s;
+        box-shadow: 0 8px 20px rgba(0, 87, 184, 0.2);
+      }
+      .btn-primary:active { transform: scale(0.96); }
 
       .hide-scrollbar::-webkit-scrollbar { display: none; }
       .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-      .glass-nav {
-        background: rgba(255, 255, 255, 0.85);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.5);
-      }
-
-      @keyframes slideUp {
-        from { opacity: 0; transform: translateY(15px); }
+      .animate-enter { animation: k-enter 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+      @keyframes k-enter {
+        from { opacity: 0; transform: translateY(40px); }
         to { opacity: 1; transform: translateY(0); }
       }
 
-      .animate-k {
-        animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      .loading-spinner {
+        border: 4px solid rgba(169, 221, 243, 0.3);
+        border-radius: 50%;
+        border-top: 4px solid var(--kal-blue);
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
       }
-
-      .naver-green {
-        background-color: #03C75A;
-      }
-
-      .date-slider {
-        display: flex;
-        overflow-x: auto;
-        scroll-snap-type: x mandatory;
-        gap: 0.75rem;
-        padding: 0.5rem 0;
-      }
-
-      .date-item {
-        scroll-snap-align: center;
-        flex-shrink: 0;
-      }
-
-      @media (max-width: 640px) {
-        .k-card { border-radius: 1.5rem; }
-      }
-
-      .modal-backdrop {
-        background: rgba(0, 0, 0, 0.4);
-        backdrop-filter: blur(4px);
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
       }
     </style>
-  <script type="importmap">
+    
+    <script type="importmap">
 {
   "imports": {
-    "react/": "https://esm.sh/react@^19.2.3/",
-    "react": "https://esm.sh/react@^19.2.3",
+    "react": "https://esm.sh/react@18.2.0",
+    "react-dom": "https://esm.sh/react-dom@18.2.0",
+    "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+    "firebase/app": "https://esm.sh/firebase@10.7.1/app",
+    "firebase/firestore": "https://esm.sh/firebase@10.7.1/firestore",
     "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-    "react-dom": "https://esm.sh/react-dom@^19.2.3",
-    "@google/genai": "https://esm.sh/@google/genai@^1.34.0"
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "@google/genai": "https://esm.sh/@google/genai@^1.34.0",
+    "firebase/": "https://esm.sh/firebase@^12.7.0/"
   }
 }
 </script>
-</head>
+  </head>
   <body>
     <div id="root"></div>
     <script type="module" src="./index.tsx"></script>
